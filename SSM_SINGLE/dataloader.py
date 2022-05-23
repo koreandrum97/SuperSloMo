@@ -119,7 +119,7 @@ class SuperSloMo(data.Dataset):
         Returns printable representation of the dataset object.
     """
 
-    def __init__(self, root, transform=None, dim=(1280, 720), randomCropSize=(704, 704), train=True):
+    def __init__(self, root, transform=None, dim=(1280, 720), randomCropSize=(704, 704), train=True, channel=None):
         """
         Parameters
         ----------
@@ -138,6 +138,8 @@ class SuperSloMo(data.Dataset):
                 `True` returns samples with data augmentation like random 
                 flipping, random cropping, etc. while `False` returns the
                 samples without randomization. Default: True
+            channel : str
+                input channel want to train.
         """
 
         # Populate the list with image paths for all the
@@ -155,6 +157,7 @@ class SuperSloMo(data.Dataset):
         self.train = train
 
         self.framesPath = framesPath
+        self.channel = channel
 
     def __getitem__(self, index):
         """
@@ -180,6 +183,13 @@ class SuperSloMo(data.Dataset):
         """
 
         sample = []
+
+        if self.channel == 'R':
+            index_c = 0
+        elif self.channel == 'G':
+            index_c = 1
+        elif self.channel == 'B':
+            index_c = 2
 
         if (self.train):
             ### Data Augmentation ###
@@ -218,11 +228,11 @@ class SuperSloMo(data.Dataset):
                 self.framesPath[index][frameIndex], cropArea=cropArea, frameFlip=randomFrameFlip)
 
             img_array = np.array(image)
-            img_R = img_array[:, :, 0]
+            img_R = img_array[:, :, index_c]
             # Apply transformation if specified.
             if self.transform is not None:
-                image = self.transform(image)
-            sample.append(image)
+                img_R = self.transform(img_R)
+            sample.append(img_R)
 
         return sample, returnIndex
 

@@ -42,6 +42,8 @@ parser.add_argument("--progress_iter", type=int, default=100,
                     help='frequency of reporting progress and validation. N: after every N iterations. Default: 100.')
 parser.add_argument("--checkpoint_epoch", type=int, default=5,
                     help='checkpoint saving frequency. N: after every N epochs. Each checkpoint is roughly of size 151 MB.Default: 5.')
+parser.add_argument("--channel", type=str,
+                    help='Input channel want to train. ex. R, G, B')
 args = parser.parse_args()
 
 # [TensorboardX](https://github.com/lanpa/tensorboardX)
@@ -77,22 +79,27 @@ cudnn.benchmark = True
 # Load Datasets
 
 # Channel wise mean calculated on adobe240-fps training dataset
-R = 0.429
-G = 0.431
-B = 0.397
-mean = [R]
+channel = args.channel
+if channel == 'R':
+    m = 0.429
+elif channel == 'G':
+    m = 0.431
+elif channel == 'B':
+    m = 0.397
+
+mean = [m]
 std = [1]
 normalize = transforms.Normalize(mean=mean,
                                  std=std)
 transform = transforms.Compose([transforms.ToTensor(), normalize])
 
 trainset = dataloader.SuperSloMo(
-    root=args.dataset_root + '/train', transform=transform, train=True)
+    root=args.dataset_root + '/train', transform=transform, train=True, channel=channel)
 trainloader = torch.utils.data.DataLoader(
     trainset, batch_size=args.train_batch_size, shuffle=True, num_workers=4)
 
 validationset = dataloader.SuperSloMo(
-    root=args.dataset_root + '/validation', transform=transform, randomCropSize=(1280, 704), train=False)
+    root=args.dataset_root + '/validation', transform=transform, randomCropSize=(1280, 704), train=False, channel=channel)
 validationloader = torch.utils.data.DataLoader(
     validationset, batch_size=args.validation_batch_size, shuffle=False, num_workers=4)
 
