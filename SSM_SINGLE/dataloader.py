@@ -3,6 +3,7 @@ from PIL import Image
 import os
 import os.path
 import random
+import numpy as np
 
 
 def _make_dataset(dir):
