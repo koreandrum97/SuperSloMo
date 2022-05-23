@@ -135,7 +135,7 @@ scheduler = optim.lr_scheduler.MultiStepLR(
 
 vgg16 = torchvision.models.vgg16(pretrained=True)
 vgg16_conv_4_3 = nn.Sequential(*list(vgg16.children())[0][:22])
-vgg16_conv_4_3[0] = nn.Conv2d(3, 64, kernel_size=(
+vgg16_conv_4_3[0] = nn.Conv2d(1, 64, kernel_size=(
     3, 3), stride=(1, 1), padding=(1, 1))
 vgg16_conv_4_3 = vgg16_conv_4_3.to(device)
 vgg16_conv_4_3 = torch.nn.DataParallel(vgg16_conv_4_3)
