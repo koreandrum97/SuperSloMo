@@ -15,6 +15,7 @@ import dataloader
 from math import log10
 import datetime
 from tensorboardX import SummaryWriter
+import torch.backends.cudnn as cudnn
 
 
 # For parsing commandline arguments
@@ -64,11 +65,9 @@ ArbTimeFlowIntrp = torch.nn.DataParallel(ArbTimeFlowIntrp)
 
 # backWarp(W, H, device)
 trainFlowBackWarp = model.backWarp(704, 704, device)
-trainFlowBackWarp = trainFlowBackWarp.to(device)
 trainFlowBackWarp = torch.nn.DataParallel(trainFlowBackWarp)
 
 validationFlowBackWarp = model.backWarp(1280, 704, device)
-validationFlowBackWarp = validationFlowBackWarp.to(device)
 validationFlowBackWarp = torch.nn.DataParallel(validationFlowBackWarp)
 
 cudnn.benchmark = True

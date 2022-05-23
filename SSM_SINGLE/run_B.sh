@@ -15,5 +15,5 @@ conda activate notebook
 
 
 date
-python train.py --dataset_root ../adobe_240 --checkpoint_dir_B ./checkpoint --channel R
+python train.py --dataset_root ../adobe_240 --checkpoint_dir ./checkpoint_B --channel B
 date
