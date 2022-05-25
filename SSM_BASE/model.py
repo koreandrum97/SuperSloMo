@@ -245,6 +245,7 @@ class backWarp(nn.Module):
         self.H = H
         self.gridX = torch.tensor(gridX, requires_grad=False, device=device)
         self.gridY = torch.tensor(gridY, requires_grad=False, device=device)
+        self.device = device
 
     def forward(self, img, flow):
         """
@@ -268,8 +269,8 @@ class backWarp(nn.Module):
         # Extract horizontal and vertical flows.
         u = flow[:, 0, :, :]
         v = flow[:, 1, :, :]
-        x = self.gridX.unsqueeze(0).expand_as(u).float() + u
-        y = self.gridY.unsqueeze(0).expand_as(v).float() + v
+        x = self.gridX.unsqueeze(0).expand_as(u).float().to(self.device) + u
+        y = self.gridY.unsqueeze(0).expand_as(v).float().to(self.device) + v
         # range -1 to 1
         x = 2*(x/self.W - 0.5)
         y = 2*(y/self.H - 0.5)
